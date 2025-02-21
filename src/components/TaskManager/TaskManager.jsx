@@ -41,7 +41,7 @@
 
 //         try {
 //             const taskWithUser = { ...newTask, userEmail: user.email };
-//             const response = await fetch('http://localhost:5000/task', { // Make sure this is the correct URL
+//             const response = await fetch('https://task-server-side-eta.vercel.app/task', { // Make sure this is the correct URL
 //                 method: 'POST',
 //                 headers: {
 //                     'Content-Type': 'application/json',
@@ -149,7 +149,7 @@ const TaskManager = () => {
 
         try {
             const taskWithUser = { ...newTask, userEmail: user.email };
-            const response = await fetch('http://localhost:5000/task', {
+            const response = await fetch('https://task-server-side-eta.vercel.app/task', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
