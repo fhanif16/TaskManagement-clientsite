@@ -116,30 +116,52 @@ const TaskItem = () => {
     setEditDescription(task.description);
   };
 
+  // const handleSave = async (id) => {
+  //   const updatedTask = { title: editTitle, description: editDescription };
+
+  //   setTasks((prevTasks) =>
+  //     prevTasks.map((task) => (task._id === id ? { ...task, ...updatedTask } : task))
+  //   );
+
+  //   try {
+  //     const response = await fetch(`https://task-server-side-eta.vercel.app/task/${id}`, {
+  //       method: "PATCH",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(updatedTask),
+  //     });
+  //     if (!response.ok) {
+  //       const errorData = await response.json();
+  //       throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
+  //     }
+  //     setEditingTask(null);
+  //   } catch (err) {
+  //     console.error("Error saving task:", err);
+  //     setError(err.message);
+  //   }
+  // };
+
+  
+  
+  
   const handleSave = async (id) => {
     const updatedTask = { title: editTitle, description: editDescription };
 
     setTasks((prevTasks) =>
-      prevTasks.map((task) => (task._id === id ? { ...task, ...updatedTask } : task))
+      prevTasks.map((task) =>
+        task._id === id ? { ...task, ...updatedTask } : task
+      )
     );
 
-    try {
-      const response = await fetch(`https://task-server-side-eta.vercel.app/task/${id}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedTask),
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
-      }
-      setEditingTask(null);
-    } catch (err) {
-      console.error("Error saving task:", err);
-      setError(err.message);
-    }
-  };
+    await fetch(`http://localhost:5000/task/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(updatedTask),
+    });
 
+    setEditingTask(null);
+  };
+  
+  
   const handleCancel = () => {
     setEditingTask(null);
   };
