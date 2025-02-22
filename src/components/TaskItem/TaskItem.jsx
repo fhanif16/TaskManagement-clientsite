@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { AuthContext } from "../../providers/Authprovider";
+import moment from "moment";
 
 const TaskItem = () => {
   const { user } = useContext(AuthContext);
@@ -17,15 +18,19 @@ const TaskItem = () => {
   useEffect(() => {
     const fetchTasks = async () => {
       if (user?.email) {
+        console.log(user.email)
         setError(null); 
         try {
-          const response = await fetch(`https://task-server-side-eta.vercel.app/task?email=${user.email}`);
+          // const response = await fetch(`https://task-server-side-eta.vercel.app/task?userEmail=${user.email}`);
+          const response = await fetch(`https://task-server-side-eta.vercel.app/task?email=${user.email}`)
           if (!response.ok) {
             const errorData = await response.json(); 
             throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
           }
           const data = await response.json();
-          setTasks(data);
+          const filteredTasks = data.filter(task => task.userEmail === user.email);
+      setTasks(filteredTasks);
+          // setTasks(data);
         } catch (err) {
           console.error("Error fetching tasks:", err);
           setError(err.message); 
@@ -139,10 +144,18 @@ const TaskItem = () => {
     setEditingTask(null);
   };
 
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "";
+    const formattedDate = moment(dateString).format('MMMM Do YYYY, h:mm:ss a'); 
+    return formattedDate;
+  };
+
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-3xl font-bold text-center mb-6">Task Manager</h1>
-      {error && <p className="text-red-500">{error}</p>} {/* Display error message */}
+      {error && <p className="text-red-500">{error}</p>} 
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         {categories.map((category) => (
           <div
@@ -193,6 +206,7 @@ const TaskItem = () => {
                       <>
                         <h3 className="font-bold text-center">{task.title}</h3>
                         <p className="text-center">{task.description}</p>
+                        <p className="text-center">Time:{formatDate(task.timestamp)}</p>
                         <div className="flex space-x-2 mt-2">
                           <button onClick={() => handleEdit(task)} className="btn btn-primary btn-sm">
                             Edit
